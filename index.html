@@ -5,20 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SkyFactory 1.12.2 — Mod Downloads</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(180deg,#78c9ef,#e9f8ff);color:#17202a}.wrap{width:min(94%,720px);margin:35px auto}.card{background:#ffffffee;border-radius:24px;padding:28px;box-shadow:0 18px 50px #0003}h1{margin:0;font-size:34px}.sub{color:#63717a;margin:8px 0 25px}.actions{display:grid;gap:10px;margin-bottom:22px}.btn{display:block;padding:14px;border-radius:12px;background:#202428;color:#fff;text-decoration:none;font-weight:700;text-align:center;border:0;font-size:16px;cursor:pointer}.btn.zip{background:#147a45}.mod{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;margin:10px 0;background:#f0f4f6;border-radius:14px}.mod strong{display:block}.mod small{color:#69757d}.mod .btn{padding:10px 14px;font-size:14px;white-space:nowrap}.note{font-size:12px;color:#737d83;line-height:1.5;margin-top:20px}
-@media(max-width:520px){.mod{align-items:flex-start;flex-direction:column}.mod .btn{width:100%}}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(180deg,#78c9ef,#e9f8ff);color:#17202a}.wrap{width:min(94%,720px);margin:35px auto}.card{background:#ffffffee;border-radius:24px;padding:28px;box-shadow:0 18px 50px #0003}h1{margin:0;font-size:34px}.sub{color:#63717a;margin:8px 0 25px}.actions{display:grid;gap:10px;margin-bottom:22px}.btn{display:block;padding:14px;border-radius:12px;background:#202428;color:#fff;text-decoration:none;font-weight:700;text-align:center;border:0;font-size:16px;cursor:pointer}.btn.zip{background:#147a45}.mod{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;margin:10px 0;background:#f0f4f6;border-radius:14px}.mod strong{display:block}.mod small{color:#69757d}.mod .btn{padding:10px 14px;font-size:14px;white-space:nowrap}.note{font-size:12px;color:#737d83;line-height:1.5;margin-top:20px}@media(max-width:520px){.mod{align-items:flex-start;flex-direction:column}.mod .btn{width:100%}}
 </style>
 </head>
 <body>
 <div class="wrap"><main class="card">
 <h1>SkyFactory</h1>
 <p class="sub">Minecraft Java 1.12.2 • Forge 14.23.5.2864</p>
-
 <div class="actions">
-<a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/jei/files/all?version=1.12.2" target="_blank" rel="noopener">Download All Mods</a>
 <button class="btn zip" id="zip" type="button">Download All (in a ZIP)</button>
 </div>
-
+<div id="status"></div>
 <div class="mod"><div><strong>Ex Nihilo: Creatio</strong><small>1.12.2 • 0.4.7.2</small></div><a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/ex-nihilo-creatio/files/all?version=1.12.2" target="_blank" rel="noopener">Download</a></div>
 <div class="mod"><div><strong>Better Questing</strong><small>1.12.2 • 3.5.329</small></div><a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/better-questing/files/all?version=1.12.2" target="_blank" rel="noopener">Download</a></div>
 <div class="mod"><div><strong>Bonsai Trees</strong><small>1.12.2</small></div><a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/bonsai-trees/files/all?version=1.12.2" target="_blank" rel="noopener">Download</a></div>
@@ -34,21 +31,34 @@
 <div class="mod"><div><strong>Chickens</strong><small>1.12.2</small></div><a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/chickens/files/all?version=1.12.2" target="_blank" rel="noopener">Download</a></div>
 <div class="mod"><div><strong>Just Enough Items (JEI)</strong><small>1.12.2</small></div><a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/jei/files/all?version=1.12.2" target="_blank" rel="noopener">Download</a></div>
 <div class="mod"><div><strong>Mouse Tweaks</strong><small>1.12.2</small></div><a class="btn" href="https://www.curseforge.com/minecraft/mc-mods/mouse-tweaks/files/all?version=1.12.2" target="_blank" rel="noopener">Download</a></div>
-
-<p class="note">The ZIP button packages the URLs into a ZIP file. Direct browser fetching of third-party mod files can be blocked by CORS, so the individual buttons remain available.</p>
-
+<p class="note">The ZIP download attempts to fetch the direct files from the configured URLs and package them locally in your browser.</p>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
-const links=[...document.querySelectorAll('.mod a')].map(a=>({name:a.parentElement.querySelector('strong').textContent,url:a.href}));
+const mods=[
+['Ex Nihilo Creatio','https://www.curseforge.com/minecraft/mc-mods/ex-nihilo-creatio/files/all?version=1.12.2'],
+['Better Questing','https://www.curseforge.com/minecraft/mc-mods/better-questing/files/all?version=1.12.2'],
+['Bonsai Trees','https://www.curseforge.com/minecraft/mc-mods/bonsai-trees/files/all?version=1.12.2'],
+['Ex Compressum','https://www.curseforge.com/minecraft/mc-mods/ex-compressum/files/all?version=1.12.2'],
+['Storage Drawers','https://www.curseforge.com/minecraft/mc-mods/storage-drawers/files/all?version=1.12.2'],
+['Iron Chests','https://www.curseforge.com/minecraft/mc-mods/iron-chests/files/all?version=1.12.2'],
+['Ender IO','https://www.curseforge.com/minecraft/mc-mods/ender-io/files/all?version=1.12.2'],
+['Thermal Expansion','https://www.curseforge.com/minecraft/mc-mods/thermal-expansion/files/all?version=1.12.2'],
+['Actually Additions','https://www.curseforge.com/minecraft/mc-mods/actually-additions/files/all?version=1.12.2'],
+['Extra Utilities 2','https://www.curseforge.com/minecraft/mc-mods/extra-utilities/files/all?version=1.12.2'],
+['Mekanism','https://www.curseforge.com/minecraft/mc-mods/mekanism/files/all?version=1.12.2'],
+['Mystical Agriculture','https://www.curseforge.com/minecraft/mc-mods/mystical-agriculture/files/all?version=1.12.2'],
+['Chickens','https://www.curseforge.com/minecraft/mc-mods/chickens/files/all?version=1.12.2'],
+['JEI','https://www.curseforge.com/minecraft/mc-mods/jei/files/all?version=1.12.2'],
+['Mouse Tweaks','https://www.curseforge.com/minecraft/mc-mods/mouse-tweaks/files/all?version=1.12.2']
+];
 document.getElementById('zip').onclick=async()=>{
-  const btn=document.getElementById('zip'); btn.textContent='Preparing ZIP...'; btn.disabled=true;
-  const zip=new JSZip();
-  const list=zip.folder('DOWNLOAD-LINKS');
-  links.forEach((x,i)=>list.file(String(i+1).padStart(2,'0')+' - '+x.name+'.url','[InternetShortcut]\nURL='+x.url+'\n'));
-  list.file('README.txt','These are the official download pages for the listed Minecraft 1.12.2 mods. Open each .url file to download the corresponding mod.\n');
-  const blob=await zip.generateAsync({type:'blob'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='SkyFactory-1.12.2-Download-Links.zip'; a.click();
-  URL.revokeObjectURL(a.href); btn.textContent='Download All (in a ZIP)'; btn.disabled=false;
+ const b=document.getElementById('zip'),s=document.getElementById('status');b.disabled=true;b.textContent='Downloading...';
+ const z=new JSZip(),f=z.folder('mods');
+ try{
+  for(let i=0;i<mods.length;i++){s.textContent='Downloading '+(i+1)+'/'+mods.length+': '+mods[i][0];const r=await fetch(mods[i][1],{redirect:'follow'});if(!r.ok)throw new Error(mods[i][0]+' HTTP '+r.status);const x=await r.blob();f.file(mods[i][0].replace(/[^a-z0-9]+/gi,'_')+'.jar',x);}
+  s.textContent='Creating ZIP...';const blob=await z.generateAsync({type:'blob'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='SkyFactory-1.12.2.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);s.textContent='Done.';
+ }catch(e){s.textContent='Download failed: '+e.message+' (the source may block browser requests).';}
+ b.disabled=false;b.textContent='Download All (in a ZIP)';
 };
 </script>
 </main></div>
