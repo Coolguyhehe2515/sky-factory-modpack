@@ -25,10 +25,13 @@ jobs:
             test "$(head -c 2 "mods/$name.jar")" = $'PK'
           }
 
-          download "actually-additions-1.12.2-r152" "https://www.curseforge.com/maven/maven-public/com/ellpeck/actuallyadditions/1.12.2-r152/ActuallyAdditions-1.12.2-r152.jar"
-          download "chickens-6.1.0" "https://www.curseforge.com/maven/maven-public/net/paulscode/chickens/6.1.0/chickens-6.1.0.jar"
+          # Actually Additions r152, verified on Modrinth for Minecraft 1.12.2 Forge.
+          download "ActuallyAdditions-1.12.2-r152" "https://api.modrinth.com/maven/maven.modrinth/4K7Q3nqd/iShpAIK6/ActuallyAdditions-1.12.2-r152.jar"
 
-          # Remaining files use CurseForge's download endpoint; fail fast if it returns HTML.
+          # Chickens 6.1.0
+          download "chickens-6.1.0" "https://www.curseforge.com/minecraft/mc-mods/chickens/download/2545467"
+
+          # Remaining CurseForge files.
           download "ex-nihilo-creatio-0.4.7.2" "https://www.curseforge.com/minecraft/mc-mods/ex-nihilo-creatio/download/2822094"
           download "better-questing-3.5.329" "https://www.curseforge.com/minecraft/mc-mods/better-questing/download/2950248"
           download "ex-compressum-3.0.11" "https://www.curseforge.com/minecraft/mc-mods/ex-compressum/download/2503500"
