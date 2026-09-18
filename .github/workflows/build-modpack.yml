@@ -1,0 +1,68 @@
+name: Build SkyFactory Modpack
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified CurseForge files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p mods
+
+          download() {
+            name="$1"
+            url="$2"
+            echo "Downloading $name"
+            curl -fL --retry 3 --retry-all-errors -o "mods/$name.jar" "$url"
+            test -s "mods/$name.jar"
+          }
+
+          download "ex-nihilo-creatio-0.4.7.2" "https://www.curseforge.com/minecraft/mc-mods/ex-nihilo-creatio/download/2822094"
+          download "better-questing-3.5.329" "https://www.curseforge.com/minecraft/mc-mods/better-questing/download/2950248"
+          download "ex-compressum-3.0.11" "https://www.curseforge.com/minecraft/mc-mods/ex-compressum/download/2503500"
+          download "bonsai-trees-1.1.4-b170" "https://www.curseforge.com/minecraft/mc-mods/bonsai-trees/download/2846217"
+          download "storage-drawers-5.5.3" "https://www.curseforge.com/minecraft/mc-mods/storage-drawers/download/5981297"
+          download "iron-chests-7.0.72.847" "https://www.curseforge.com/minecraft/mc-mods/iron-chests/download/2747935"
+          download "ender-io-5.3.72" "https://www.curseforge.com/minecraft/mc-mods/ender-io/download/4674244"
+          download "thermal-expansion-5.5.7.1" "https://www.curseforge.com/minecraft/mc-mods/thermal-expansion/download/2926431"
+          download "actually-additions-r152" "https://www.curseforge.com/minecraft/mc-mods/actually-additions/download/3117927"
+          download "extra-utilities-2-1.12-1.9.9" "https://www.curseforge.com/minecraft/mc-mods/extra-utilities/download/2678374"
+          download "mekanism-9.7.9.380" "https://www.curseforge.com/minecraft/mc-mods/mekanism/download/2736277"
+          download "mystical-agriculture-1.7.5" "https://www.curseforge.com/minecraft/mc-mods/mystical-agriculture/download/2704562"
+          download "chickens-6.1.0" "https://www.curseforge.com/minecraft/mc-mods/chickens/download/2545467"
+          download "jei-4.16.1.1007" "https://www.curseforge.com/minecraft/mc-mods/jei/download/5101318"
+          download "mouse-tweaks-2.10.1" "https://www.curseforge.com/minecraft/mc-mods/mouse-tweaks/download/3359843"
+
+      - name: Verify downloads are JAR files
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in mods/*.jar; do
+            printf '%s: ' "$f"
+            file "$f"
+            test "$(head -c 2 "$f")" = $'PK'
+          done
+
+      - name: Create ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p pack/mods
+          cp mods/*.jar pack/mods/
+          printf '%s\n' 'Minecraft Java 1.12.2' 'Forge 14.23.5.2864' '' '15 mods downloaded from their specified CurseForge files.' > pack/README.txt
+          cd pack
+          zip -9 -r ../SkyFactory-1.12.2.zip .
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SkyFactory-1.12.2
+          path: SkyFactory-1.12.2.zip
+          retention-days: 30
