@@ -26,7 +26,7 @@ jobs:
           }
 
           # Actually Additions r152, verified on Modrinth for Minecraft 1.12.2 Forge.
-          download "ActuallyAdditions-1.12.2-r152" "https://api.modrinth.com/maven/maven.modrinth/4K7Q3nqd/iShpAIK6/ActuallyAdditions-1.12.2-r152.jar"
+          download "ActuallyAdditions-1.12.2-r152" "https://cdn.modrinth.com/data/4K7Q3nqd/versions/iShpAIK6/ActuallyAdditions-1.12.2-r152.jar"
 
           # Chickens 6.1.0
           download "chickens-6.1.0" "https://www.curseforge.com/minecraft/mc-mods/chickens/download/2545467"
